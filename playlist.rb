@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'json'
 require 'pp'
+load 'database.rb'
 
 =begin
 Validation / Data cleanup rules:
@@ -30,7 +31,7 @@ Json:
 ##
 # Validate a song entry
 def validate(song)
-  #TODO other basic checks such as bpm, size, time, and year are ints
+  # TODO other basic checks such as bpm, size, time, and year are ints
   # song must contain all required database song field values
   return false if song.keys.sort != ["Album", "Artist", "BPM", "Composer",
                                      "Genre", "Name", "Size", "Time", "Year"]
@@ -43,12 +44,25 @@ def validate(song)
   return true
 end
 
+
+# TODO: set name and artist = to unique key, can insert muliple of the same songs
+# TODO: mess with the  formatted[:updated_at] = Time.now()
+
+##
+# Load a json file and insert as songs in the database
 def load_from_file(filename)
   file = open(filename)
   json = file.read
-  @songs = JSON.parse(json)
-  @songs2 = JSON.parse(json)
-  @songs.keep_if{|song| validate(song)}
+  songs_to_add = JSON.parse(json)
+  songs_to_add.keep_if{|song| validate(song)}
+  dataset = @database.from(:songs)
+  songs_to_add.each do |song|
+    dataset = @database.from(:songs)
+    formatted = {}
+    song.each_pair.collect{|key, val| formatted[key.downcase.to_sym] = val}
+    formatted[:created_at] = Time.now()
+    dataset.insert(formatted)
+  end
 end
 
 def create_genre_playlist(genre)
@@ -59,9 +73,6 @@ def create_decade_playlist(decade)
 
 end
 
+init_db
 load_from_file("mr_playlist.json")
-names1 = @songs.collect {|x| x["Name"]}
-names2 = @songs2.collect {|x| x["Name"]}
-diff = names2 - names1
-pp diff
 
