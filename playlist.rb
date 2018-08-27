@@ -29,7 +29,7 @@ Json:
 =end
 
 ##
-# Validate a song entry
+# Validate a song entry (before adding to db)
 def validate(song)
   # TODO other basic checks such as bpm, size, time, and year are ints
   # song must contain all required database song field values
@@ -45,7 +45,6 @@ def validate(song)
 end
 
 
-# TODO: set name and artist = to unique key, can insert muliple of the same songs
 # TODO: mess with the  formatted[:updated_at] = Time.now()
 
 ##
@@ -57,22 +56,77 @@ def load_from_file(filename)
   songs_to_add.keep_if{|song| validate(song)}
   dataset = @database.from(:songs)
   songs_to_add.each do |song|
-    dataset = @database.from(:songs)
     formatted = {}
     song.each_pair.collect{|key, val| formatted[key.downcase.to_sym] = val}
     formatted[:created_at] = Time.now()
-    dataset.insert(formatted)
+    if dataset.where(:artist=>formatted[:artist],
+                     :name=>formatted[:name]).empty?
+      dataset.insert(formatted)
+    end
   end
 end
 
-def create_genre_playlist(genre)
+#TODO: can probably abstract out most of the genre/decade code into a common func
 
+def create_genre_playlist(genre)
+  genre.downcase!
+  # check if playlist is already created, if so delete and create again
+  if !@database.from(:playlists).where(:playlist_name => genre).empty?
+    playlist = @database.from(:playlists).where(:playlist_name => genre)
+    id = playlist.select(:playlist_id).single_value
+    # delete playlist from playlists and playlist_mapping
+    @database.from(:playlist_mapping).where(:playlist_id => id).delete
+    @database.from(:playlists).where(:playlist_name => genre).delete
+  end
+  songs = @database.from(:songs).grep(Sequel.function(:lower, :genre),
+                                        "%#{genre}%")
+  # create playlists entry
+  playlist_id = @database.from(:playlists).insert(:playlist_name => genre)
+  # create playlist_mapping for each of the songs
+  songs.each do |song|
+    @database.from(:playlist_mapping).insert(:song_id => song[:song_id],
+                                             :playlist_id => playlist_id)
+  end
 end
 
+##
+# Create a playlist given a decade (90's for ex)
 def create_decade_playlist(decade)
+  if !decade.match(/^\d0's$/)
+    puts "Invalid Input: please format the decade using the plural of its " +
+         "numerical decade, for ex. 80's, 90's, or 00's"
+    exit
+  end
+  # check if playlist is already created, if so delete and create again
+  if !@database.from(:playlists).where(:playlist_name => decade).empty?
+    playlist = @database.from(:playlists).where(:playlist_name => decade)
+    id = playlist.select(:playlist_id).single_value
+    # delete playlist from playlists and playlist_mapping
+    @database.from(:playlist_mapping).where(:playlist_id => id).delete
+    @database.from(:playlists).where(:playlist_name => decade).delete
+  end
+  year = decade.chomp("'s").to_i
+  year = year <= 10 ? year + 2000 : year + 1900
+  songs = @database.from(:songs).where(:year => Array(year..(year+9)))
+  # create playlists entry
+  playlist_id = @database.from(:playlists).insert(:playlist_name => decade)
+  # create playlist_mapping for each of the songs
+  songs.each do |song|
+    @database.from(:playlist_mapping).insert(:song_id => song[:song_id],
+                                             :playlist_id => playlist_id)
+  end
+end
 
+def get_playlist(name)
+  binding.pry
+  name.downcase!
+  playlist = @database.from(:playlists).where(playlist_name: name)
+  id = playlist.select(:playlist_id).single_value
+  # TODO: finish this query
 end
 
 init_db
 load_from_file("mr_playlist.json")
-
+create_decade_playlist("90's")
+create_genre_playlist("Rock")
+get_playlist("Rock")
