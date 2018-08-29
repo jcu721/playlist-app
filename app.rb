@@ -1,6 +1,7 @@
 #!/bin/ruby
 
 require 'sinatra'
+require 'thin'
 require File.dirname(__FILE__)+'/playlist.rb'
 
 #class AppController < Sinatra::Base
