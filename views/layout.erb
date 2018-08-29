@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Jane's Playlist App</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 5px;
+      }
+      th {
+        text-align: left;
+      }
+      tr.playlist_row :hover{
+        cursor: pointer;
+        background-color: #ccc;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Playlist Generator</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="/load_songs">Load Songs</a></li>
+          <li><a href="/create_playlist">Create Playlist</a></li>
+          <li><a href="/playlists">View Playlists</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div  class='container'>
+    <h1><%= @title %></h1>
+    <%= yield %>
+    <p></p>
+    <p>Currently connected to the <%= @db_name %> database.</p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+<p><%= @table_desc %></p>
+<table>
+  <tr>
+    <th>Name </th>
+  </tr>
+  <% @playlists.each do |playlist| %>
+  <tr>
+    <td><a href="/playlist/<%= playlist[:playlist_name] %>"><%= playlist[:playlist_name] %></a></td>
+  </tr>
+  <% end %>
+</table>

@@ -6,9 +6,13 @@ require 'pry-nav'
 require 'pry'
 
 
-def init_db
-  db_name = "playlist_app.sqlite3"
-  @database = Sequel.sqlite(db_name)
+def init_db(db_name=nil)
+  if db_name
+    @db_name = db_name
+  else
+    @db_name = "default.sqlite3"
+  end
+  @database = Sequel.sqlite(@db_name)
   # create tables if db is empty
 #  binding.pry
   if @database.tables.include?(:songs)
