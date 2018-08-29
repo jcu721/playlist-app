@@ -44,14 +44,17 @@ require File.dirname(__FILE__)+'/playlist.rb'
   end
 
   get '/playlists' do
-    @playlists = @database.from(:playlists).select(:playlist_name).order(:playlist_name).to_a
+    @playlists = @database.from(:playlists).select(:playlist_name)
+                   .order(:playlist_name).to_a
     @table_desc = "Displaying all playlists (#{@playlists.size} total)"
     erb :playlist_table
   end
 
   get '/playlist/:name' do
+    # TODO: bug, have to manually recreate playlist to see newly added songs
     @songs = get_playlist(params['name'])
-    @table_desc = "Displaying the #{params['name']} playlist (#{@songs.size} songs)"
+    @table_desc = "Displaying the #{params['name']} playlist " +
+                  "(#{@songs.size} songs)"
     erb :song_table
   end
   

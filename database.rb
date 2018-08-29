@@ -2,6 +2,7 @@
 
 require 'sequel'
 require 'sqlite3'
+# TODO: remove debugging gems
 require 'pry-nav'
 require 'pry'
 

@@ -28,7 +28,7 @@
 </table>
 <% if @songs.empty? %>
 <p></p>
-<p style="font-size:150%;">Looks like there aren't any songs in the database!</p>
+<p style="font-size:150%;">Looks like there aren't any songs yet!</p>
 <a href="/load_songs" class="btn" role="button" style="padding-left:0;">Add Songs</a>
 <% elsif !@table_desc.include?("Showing all songs")%>
 <a href="/all_songs" class="btn" role="button" style="padding-left:0; padding-top:10;">Show All Songs</a>
