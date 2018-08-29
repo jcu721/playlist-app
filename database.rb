@@ -2,10 +2,6 @@
 
 require 'sequel'
 require 'sqlite3'
-# TODO: remove debugging gems
-require 'pry-nav'
-require 'pry'
-
 
 def init_db(db_name=nil)
   if db_name
@@ -15,7 +11,6 @@ def init_db(db_name=nil)
   end
   @database = Sequel.sqlite(@db_name)
   # create tables if db is empty
-#  binding.pry
   if @database.tables.include?(:songs)
     # TODO: check that this songs table has the right schema
   else

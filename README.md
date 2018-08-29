@@ -7,7 +7,7 @@ The following steps are tested on Fedora 28.
 This app uses a Sinatra web server and a SQLite database to serve web pages.
 
 1. Install Ruby   `# yum install ruby ruby-devel`
-2. Install sqlite `# yum install sqlite-devel rubygem-sqlite3`
+2. Install SQLite `# yum install sqlite-devel rubygem-sqlite3`
 3. Install bundle `# yum install rubygem-bundler`
 
 ## Running the App
@@ -15,10 +15,10 @@ This app uses a Sinatra web server and a SQLite database to serve web pages.
 2. Run `# bundle install` to install the necessary ruby gems from the Gemfile.
 
    If any of the gems give you trouble, try installing through fedora (prefixed
-   with rubygem-#{name}), for example `sudo yum install rubygem-thin`
+   with rubygem-#{name}), for example, `# yum install rubygem-thin`
 
 3. Start the server from within the project.
-   `ruby app.rb`
+   `$ ruby app.rb`
 4. Navigate to `http://localhost:4567` to interact with the app, add songs, and
    create playlists.
 5. To finish, CTRL-C out of the server process.
@@ -38,14 +38,15 @@ TODO: info for running tests
 * Error handling is not very robust. Invalid song entries could cause inserts
   to break, errors are not bubbled up from playlist.rb to the user (exit on
   invalid create_playlist params causes internal server error instead).
-* Web app would probably not handle large volumes of data well, would need to
-  implement some sort of pagination/incremental loading of songs.
 * If you create a playlist before adding any songs to the db, that playlist
   would get persisted with no songs and would not be updated with any new songs
   unless you specifically recreated the playlist of that name.
 * There is no current way for the updated_at variable to be updated. Currently
   the app ignores new add requests for songs already in the db (as apposed to
   updating the values and the updated_at timestamp)
+* Web app would probably not handle large volumes of data well, would need to
+  implement some sort of pagination/incremental loading of songs. Also, SQLite
+  is not ideal for a production environment.
 
 ## Future Enhancements
 * API support for deleting playlists and updating playlists after adding new
