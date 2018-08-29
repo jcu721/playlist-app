@@ -57,6 +57,12 @@ def create_playlist(type, name)
   end
   case type
   when "genre"
+    if !name.match(/^(\w|\s)*$/)
+      puts "Invalid Input: no special characters or sql injection attacks " +
+           "allowed, only alphanumeric genre names, for ex. 'Punk', 'Rock', " +
+           "or 'Punk Rock'"
+      exit
+    end
     songs = @database.from(:songs).grep(Sequel.function(:lower, :genre),
                                         "%#{name}%")
   when "decade"
