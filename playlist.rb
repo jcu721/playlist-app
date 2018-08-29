@@ -1,7 +1,6 @@
 #!/bin/ruby
 require 'rubygems'
 require 'json'
-require 'pp'
 require File.dirname(__FILE__)+ '/database.rb'
 
 ##
@@ -18,6 +17,7 @@ def validate(song)
   # Songs by the Bee Gees or Linkin Park may not be added to the database
   return false if ["The Bee Gees", "Linkin Park"].include?(song["Artist"])
   return true
+  # TODO: return rejected songs to the user insted of dropping silently
 end
 
 ##
@@ -35,7 +35,7 @@ def load_from_file(filename)
     formatted[:updated_at] = Time.now()
     if dataset.where(:artist=>formatted[:artist],
                      :name=>formatted[:name]).empty?
-      # TODO: add logic for updated_at?
+      # TODO: add logic for updated_at
       dataset.insert(formatted)
     end
   end
