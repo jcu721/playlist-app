@@ -1,5 +1,3 @@
-#!/bin/ruby
-
 require 'sinatra/base'
 require 'thin'
 require File.dirname(__FILE__)+'/playlist.rb'

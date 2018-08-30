@@ -1,9 +1,6 @@
-#!/bin/ruby
 require 'rubygems'
 require 'json'
 require File.dirname(__FILE__)+ '/database.rb'
-require 'pry-nav'
-require 'pry'
 
 class PlaylistApp
   attr_reader :database, :db_name
@@ -69,25 +66,23 @@ class PlaylistApp
     case type
     when "genre"
       if !name.match(/^(\w|\s)*$/)
-        puts "Invalid Input: no special characters or sql injection attacks " +
-             "allowed, only alphanumeric genre names, for ex. 'Punk', 'Rock', " +
-             "or 'Punk Rock'"
-        exit
+        raise "Invalid Input: no special characters or sql injection attacks " +
+             "allowed, only alphanumeric genre names, for ex. 'Punk', " +
+             "'Rock', or 'Punk Rock'"
       end
       songs = @database.from(:songs).grep(Sequel.function(:lower, :genre),
                                           "%#{name}%")
     when "decade"
       if !name.match(/^\d0's$/)
-        puts "Invalid Input: please format the decade using the plural of its " +
-             "numerical decade, for ex. 80's, 90's, or 00's"
-        exit
+        raise "Invalid Input: please format the decade using the plural of " +
+             "its numerical decade, for ex. 80's, 90's, or 00's"
       end
       year = name.chomp("'s").to_i
       year = year <= 10 ? year + 2000 : year + 1900
       songs = @database.from(:songs).where(:year => Array(year..(year+9)))
     else
-      puts "Invalid type. The only supported playlist types are decade and genre."
-      exit
+      raise "Invalid type. The only supported playlist types are decade and " +
+           "genre."
     end
     # create playlists entry
     playlist_id = @database.from(:playlists).insert(:playlist_name => name)

@@ -1,5 +1,3 @@
-#!/bin/ruby
-
 require 'sequel'
 require 'sqlite3'
 
