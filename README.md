@@ -26,7 +26,7 @@ This app uses a Sinatra web server and a SQLite database to serve web pages.
 ## Running tests
 Tests are provided that use rspec.
 
-To run tests: `bundle exec rspec`
+To run tests: `$ bundle exec rspec`
 
 ## Built With
 * [Ruby](https://www.ruby-lang.org/en/) Backend

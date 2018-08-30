@@ -1,3 +1,4 @@
+require File.dirname(__FILE__)+'/../playlist.rb'
 describe PlaylistApp do
 
   before(:all) do
